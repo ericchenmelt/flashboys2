@@ -49,8 +49,7 @@ addr_lst=addr_lst+dex_list
 
 
 
-# for idx in range(max(startBlock, number), endBlock + 1, ratio):
-#
+# for testing purposes
 blocks={
   'pending': {
     '0x0216d5032f356960cd3749c31ab34eeff21b3395': {
@@ -148,7 +147,7 @@ def get_pending_pool():
     print("fetched at: ",datetime.datetime.now())
     # block = web3.txpool.content
     block=blocks
-    # blocks=blocks.replace("\'", "\"")
+    data=[]
     pending_transactions = block['pending']
     queued_transactions= block['queued']
     idx=web3.eth.blockNumber
@@ -158,8 +157,10 @@ def get_pending_pool():
         for element in nonce:
             tx=nonce[element][0]
             if tx['to'] in addr_lst:
-                result = '{} {} {} {} {} {} \n'.format(idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input'])
+                result = '{} {} {} {} {} {} {} \n'.format('pending',idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input'])
+                data=data+['pending',idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input']]
                 print(result)
+
                 with open(result_dir, 'a+') as f:
                     f.write(result)
     for txHash in queued_transactions:
@@ -169,10 +170,11 @@ def get_pending_pool():
         for element in nonce:
             tx = nonce[element][0]
             if tx['to'] in addr_lst:
-                result = '{} {} {} {} {} {} \n'.format(idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input'])
+                result = '{} {} {} {} {} {} \n'.format('queued',idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input'])
+                data = data + ['queued', idx, txHash, tx['from'], tx['to'], tx['gasPrice'], tx['input']]
                 print(result)
                 with open(result_dir, 'a+') as f:
                     f.write(result)
-
+    return data
 
 get_pending_pool()

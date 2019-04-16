@@ -1,9 +1,13 @@
 import pygraphviz as pgv
 import csv, csv_hack, os
 import json
+import re
 from exchanges import get_trade_data_from_log_item
 
 COLORS = ["red", "blue", "green", "orange", "purple", "black", "yellow", "grey", "darkgreen"] * 10
+
+
+# input format: tx hash, address, data, topics 
 
 logsdict = csv.DictReader(open('data/all_logs_bigquery.csv'), delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -32,7 +36,11 @@ def get_profit_graph(logset, txhash):
         address = logitem[0]
         data = logitem[1]
         topicstext = logitem[2].replace('\'', '\"')
-        topics = json.loads(topicstext)
+        
+        print(topicstext)
+        topicstext_list=topicstext[1:len(topicstext)-1].split(',')
+        # very very very ratchet fix of a bad table
+        topics = json.loads(json.dumps(topicstext_list))
         data = data[2:] # strip 0x from hex
         trades_data = get_trade_data_from_log_item(topics, data, address)
         if trades_data is not None:
@@ -75,7 +83,6 @@ for log in logsdict:
     if not hash in logs:
         logs[hash] = []
     logs[hash].append((log['address'], log['data'], log['topics']))
-
 
 spamwriter = csv.writer(open('data/profits.csv', 'w'), delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)

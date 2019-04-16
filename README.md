@@ -7,11 +7,17 @@ This is the repository of data associated with the Flash Boys 2.0: Frontrunning,
 As you can see, there are various python scripts in the root of this repository. These scripts take the raw transaction data from the Etherum network as stored in a SQL DB and parse it to find information about gas auctions.
 
 * calculate\_profit\_from\_logs.py - calculates arbitrage profits from solidity log events. Uses Google BigQuery dataset.
+
+    -Utilizes dataset from GoogleBigQuery. Strangely google BigQ converts json to csv, and then this script converts some fields back to json.....
+Unclear how profit calculation is done, will learn more
 * calculate\_slots.py - calculate the price slots for gas auctions
 * count\_wins.py - count the number of times each arbitrager won an auction
 * csv\_hack.py - cleans data for parsing
 * csv\_to\_sqlite.py - collates data from multiple CSVs into one database
-* exchanges.py - scrapes and parses data from a list of well known distributed exchanges
+* exchanges.py - scrapes and parses data from a list of well known distributed exchanges.
+
+    -Requires log data. Function in question: `get_trade_data_from_log_item(topics, data, address)`
+ 
 * filter\_list.txt - list of addresses to ignore
 * gastoken.py - script to identify if an arbitrager is using GasToken
 * generate\_graphs.py - Generates various graphs
@@ -39,6 +45,9 @@ Contains a list of known relayers for various exchanges.
 ## etherdelta
 
 Contains scripts to perform scraping of Etherdelta's transaction order book data.
+
+Can be a universal scraper for all blockchain txs. Long as we point the rpc correctly and modify the code
+after line 60.
 
 ## go-ethereum
 
